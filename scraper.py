@@ -1,5 +1,5 @@
 from Scweet.scweet import scrape
-from Scweet.user import get_user_information, get_users_following, get_users_followers
+from Scweet.user import get_user_information
 from argparse import ArgumentParser
 from datetime import datetime
 import pandas as pd
