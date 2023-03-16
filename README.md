@@ -1,16 +1,24 @@
 ### Before running this program:
 
-1. Install these libraries Scweet, pandas, numpy
+1. Must have Google Chrome.
+2. Install these libraries Scweet, pandas, numpy
     - for Scweet: https://github.com/Altimis/Scweet
-2. The Scweet is not currently maintained and the Tweet text data is not
-   properly scraped due to Twitter UI change. To fix this, in VS Code (other
-   code editor have this feature too), right click the `scrape()` function
-   in the code and click `Go to Definition`. You will be directed to `scweet.py`.
-   Within the directory of `scweet.py`, you will see `utils.py`, go that file.
-   Replace line 47 with
+3. The Scweet is not currently maintained. Some code in the library must be modified
+   to make it work:
+  - Tweet text data is not properly scraped due to Twitter UI change. To fix this, 
+    in VS Code (other code editor have this feature too), right click the `scrape()` 
+    function in the code and click `Go to Definition`. You will be directed to 
+    `scweet.py`. Within the directory of `scweet.py`, you will see `utils.py`, go 
+    that file. Replace line 47 with
    ```python
    text = card.find_element_by_xpath('.//div[@data-testid="tweetText"]').text
    ```
+  - get_user_information() returns None most of the time. To fix this, go to `user.py`
+    (it is in the same directory as `scweet.py` and `utils.py`) and replace
+    line 95 with:
+    ```python
+    sleep(30)
+    ```
 
 ### How to run:
 ```
