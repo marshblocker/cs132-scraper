@@ -10,10 +10,10 @@
     function in the code and click `Go to Definition`. You will be directed to 
     `scweet.py`. Within the directory of `scweet.py`, you will see `utils.py`, go 
     that file. Replace line 47 with
-   ```python
-   text = card.find_element_by_xpath('.//div[@data-testid="tweetText"]').text
-   ```
-  - get_user_information() returns None most of the time. To fix this, go to `user.py`
+    ```python
+    text = card.find_element_by_xpath('.//div[@data-testid="tweetText"]').text
+    ```
+  - `get_user_information()` returns `None` most of the time. To fix this, go to `user.py`
     (it is in the same directory as `scweet.py` and `utils.py`) and replace
     line 95 with:
     ```python
