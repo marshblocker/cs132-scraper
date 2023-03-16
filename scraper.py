@@ -5,6 +5,8 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import os
+import platform
+import winsound
 
 GROUP = 31
 CATEGORY = 'RBRD'
@@ -19,11 +21,15 @@ def main():
         interval=1,
     )
 
+    notify_user()
+
     df = remove_unrelated_tweets(df, keywords, since, until)
     df = build_required_dataframe(df, collector, keywords)
     df = fill_user_information(df)
 
     save_as_csv(df, since, until)
+
+    notify_user()
 
 def get_command_args():
     parser = ArgumentParser()
@@ -351,6 +357,27 @@ def save_as_csv(df: pd.DataFrame, since: str, until: str):
         pass
 
     df.to_csv(csv_filename)
+
+# Create a cross-platform function that notifies the user that the program is done
+# by creating a sound. Do it for Windows, Linux, and Mac. Run it three times.
+# Use a python stdlib to find the current OS.
+def notify_user():
+    # Windows
+    if platform.system() == 'Windows':
+        for _ in range(3):
+            winsound.Beep(1000, 1000)
+    # Linux
+    elif platform.system() == 'Linux':
+        for _ in range(3):
+            os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (1, 1000))
+    # Mac
+    elif platform.system() == 'Darwin':
+        for _ in range(3):
+            os.system('say "A task has been completed."')
+    else:
+        for _ in range(3):
+            print('\a')
+
 
 if __name__ == '__main__':
     main()
