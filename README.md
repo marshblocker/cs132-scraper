@@ -33,7 +33,7 @@
       hash_tags = ''
       if hashtag is not None:
         hashtag = list(map(lambda x: '%23' + x, hashtag))
-        hash_tags = '(' + hashtag.split('%20OR%20') +')%20'
+        hash_tags = '(' + '%20OR%20'.join(hashtag) +')%20'
       ```
 
       change line 62 in `scweet.py` with:
