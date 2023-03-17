@@ -21,15 +21,34 @@
       ```python
       sleep(30)
       ```
+    - hashtag is not scraped properly. To fix this, change line 52 in `utils.py` with:
+
+      ```python
+      embedded = card.find_element_by_xpath(".//div[contains(@data-testid, 'videoPlayer') or contains(@data-testid, 'tweetPhoto')]//img").get_attribute('src')
+      ```
+
+      change `hash_tags` initialization (line 157) with:
+
+      ```python
+      hash_tags = ''
+      if hashtag is not None:
+        hashtag = list(map(lambda x: '%23' + x, hashtag))
+        hash_tags = '(' + hashtag.split('%20OR%20') +')%20'
+      ```
+
+      change line 62 in `scweet.py` with:
+      ```python
+        path = save_dir + "/" + '_'.join(hashtag) + '_' + str(since).split(' ')[0] + '_' + str(until).split(' ')[0] + '.csv'
+      ```
 
 ### How to run:
 ```
-usage: scraper.py [-h] -c COLLECTOR_NAME -s DATE -u DATE -k keyword [keyword ...]
+usage: scraper.py [-h] -c COLLECTOR_NAME -s DATE -u DATE -k keyword [keyword ...] -H hashtag [hashtag ...]
 
 This program automates the data collection for the CS 132 Project. This automatically saves a CSV file (format:
-<SINCE_DATE>---<UNTIL_DATE>) of the formed dataframe from scraped tweets. Please place in double quotes the command
-argument value/s. Example usage of this program: python test.py -c "Marinas, Gabriel Kenneth" -s "2016-01-01" -u
-"2016-03-1" -k "fakevp" "leni mandaraya" "2016 election"
+<SINCE_DATE>---<UNTIL_DATE>) of the formed dataframe from scraped tweets. Please place in double quotes the command argument      
+value/s. Example usage of this program: python test.py -c "Marinas, Gabriel Kenneth" -s "2016-01-01" -u "2016-03-1" -k "fakevp"   
+"leni mandaraya" -H "FakeVP" "ImpeachLeni"
 
 options:
   -h, --help            show this help message and exit
@@ -40,6 +59,9 @@ options:
   -u DATE, --until DATE
                         End date of parsing. Format: YYYY-MM-DD
   -k keyword [keyword ...], --keywords keyword [keyword ...]
-                        Keywords used for scraping. You can specify many keywords, e.g. -k "fakevp" "leni mandaraya" "2016
+                        Keywords used for scraping. You can specify many keywords, e.g. -k "fakevp" "leni mandaraya" "2016        
                         election"
+  -H hashtag [hashtag ...], --hashtags hashtag [hashtag ...]
+                        Hashtags used for scraping. You can specify many hashtags, e.g. -h "#FakeVP" "#ImpeachLeni"
+                        "#LeniResign"
 ```

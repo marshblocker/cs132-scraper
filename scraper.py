@@ -13,12 +13,13 @@ CATEGORY = 'RBRD'
 TOPIC = 'Leni cheated during the 2016 General Election'
 
 def main():
-    collector, since, until, keywords = get_command_args()
+    collector, since, until, keywords, hashtags = get_command_args()
     df = scrape(
         words=keywords,
         since=since,
         until=until,
         interval=1,
+        hashtag=hashtags
     )
 
     notify_user()
@@ -41,7 +42,8 @@ def get_command_args():
         Please place in double quotes the command argument value/s. \
         Example usage of this program: \
         python test.py -c "Marinas, Gabriel Kenneth" -s "2016-01-01" \
-        -u "2016-03-1" -k "fakevp" "leni mandaraya" "2016 election"'
+        -u "2016-03-1" -k "fakevp" "leni mandaraya" \
+        -H "FakeVP" "ImpeachLeni"'
 
     parser.add_argument(
         '-c',
@@ -80,14 +82,25 @@ def get_command_args():
         required=True
     )
 
+    parser.add_argument(
+        '-H',
+        '--hashtags',
+        nargs='+',
+        metavar='hashtag',
+        help='Hashtags used for scraping. You can specify many hashtags, e.g. -h "#FakeVP" "#ImpeachLeni" "#LeniResign"',
+        type=str,
+        required=True
+    )
+
     args = parser.parse_args()
 
     collector: str = args.collector
     since: str = args.since
     until: str = args.until
     keywords: list[str] = args.keywords
+    hashtags: list[str] = args.hashtags
 
-    return (collector, since, until, keywords)
+    return (collector, since, until, keywords, hashtags)
 
 def remove_unrelated_tweets(
         df: pd.DataFrame, 
@@ -99,12 +112,14 @@ def remove_unrelated_tweets(
 
     total_tweets = len(df)
 
-    print('\nAfter scraping all tweets related to the keywords {} from {} up to {}. You will now remove all tweets that does not spread mis/disinformation about the topic "{}".\n'.format(keywords, since, until, TOPIC))
+    print('\nAfter scraping all tweets related to the keywords {} from {} up to {}, you will now remove all tweets that does not spread mis/disinformation about the topic "{}".\n'.format(keywords, since, until, TOPIC))
     for i, iterrow in enumerate(list(df.iterrows())):
         username = iterrow[1]['UserName']
         print('====================================================================')
         print('({}/{}) Tweet by {}:\n'.format(i+1, total_tweets, username))
         print(iterrow[1]['Text'])
+        if len(iterrow[1]['Embedded_text']) > 0:
+            print('\nHas an image/video attached: {}'.format(iterrow[1]['Embedded_text']))
 
         while True:
             ans = input('\nDiscard this tweet? [y/n]: ')
@@ -356,7 +371,7 @@ def save_as_csv(df: pd.DataFrame, since: str, until: str):
     except FileNotFoundError:
         pass
 
-    df.to_csv(csv_filename)
+    df.to_csv(csv_filename, index=False)
 
 # Create a cross-platform function that notifies the user that the program is done
 # by creating a sound. Do it for Windows, Linux, and Mac. Run it three times.
