@@ -349,11 +349,14 @@ def fill_user_information(df: pd.DataFrame) -> pd.DataFrame:
             users_info[account_handle]
         
         # convert join date to mm/yyyy format
-        join_date = join_date.split(' ')[1:]
-        join_date = ' '.join(join_date)
-        join_date = datetime.strptime(join_date, '%B %Y')
-        join_date = join_date.strftime('%m/%Y')
-        print('join date:', join_date)
+        try:
+            join_date = join_date.split(' ')[1:]
+            join_date = ' '.join(join_date)
+            join_date = datetime.strptime(join_date, '%B %Y')
+            join_date = join_date.strftime('%m/%Y')
+            print('join date:', join_date)
+        except ValueError:
+            join_date = ''
         
         df.loc[index, 'Account bio'] = desc
         df.loc[index, 'Joined'] = join_date
